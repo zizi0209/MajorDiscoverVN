@@ -1,5 +1,15 @@
 import { mutation } from "./_generated/server";
 
+// Map từ category cũ sang categorySlug mới
+// cong-nghe-thong-tin → cntt
+// quan-tri-kinh-doanh → kinh-te-quan-tri
+// y-khoa → y-duoc
+// tam-ly-hoc → tam-ly
+// ngon-ngu-anh → ngoai-ngu
+// ky-thuat-o-to → o-to-co-khi
+// ke-toan → ke-toan
+// duoc-hoc → y-duoc
+
 const SEED_DATA = [
   {
     slug: "cong-nghe-thong-tin",
@@ -17,7 +27,7 @@ const SEED_DATA = [
       "Tuổi nghề lập trình viên bị nhiều định kiến.",
     ],
     subjects: ["A00", "A01", "D01", "D07"],
-    category: "Công nghệ",
+    categorySlug: "cntt",
     universities: [
       { name: "Đại học Bách khoa Hà Nội (HUST)", region: "North", lastYearScore: 28.5, predictedScore: 28.3, khoi: ["A00", "A01"] },
       { name: "Đại học Công nghệ - ĐHQGHN (UET)", region: "North", lastYearScore: 27.8, predictedScore: 27.5, khoi: ["A00", "A01"] },
@@ -42,7 +52,7 @@ const SEED_DATA = [
       "Yêu cầu kỹ năng mềm cao từ nhà tuyển dụng.",
     ],
     subjects: ["A00", "A01", "D01", "D07"],
-    category: "Kinh tế",
+    categorySlug: "kinh-te-quan-tri",
     universities: [
       { name: "Đại học Ngoại thương (FTU)", region: "North", lastYearScore: 28.2, predictedScore: 28.0, khoi: ["A00", "A01", "D01", "D07"] },
       { name: "Đại học Kinh tế Quốc dân (NEU)", region: "North", lastYearScore: 27.7, predictedScore: 27.5, khoi: ["A00", "A01", "D01"] },
@@ -66,7 +76,7 @@ const SEED_DATA = [
       "Điểm chuẩn đầu vào cực kỳ cao.",
     ],
     subjects: ["B00", "A00"],
-    category: "Y - Dược",
+    categorySlug: "y-duoc",
     universities: [
       { name: "Đại học Y Hà Nội (HMU)", region: "North", lastYearScore: 28.9, predictedScore: 28.5, khoi: ["B00"] },
       { name: "Đại học Y Dược TP.HCM (UMP)", region: "South", lastYearScore: 28.5, predictedScore: 28.4, khoi: ["B00", "A00"] },
@@ -90,7 +100,7 @@ const SEED_DATA = [
       "Ảnh hưởng tâm lý cá nhân nếu không biết cách cân bằng.",
     ],
     subjects: ["C00", "D01", "D14", "B00"],
-    category: "Xã hội",
+    categorySlug: "tam-ly",
     universities: [
       { name: "ĐH Khoa học Xã hội và Nhân văn - ĐHQGHN", region: "North", lastYearScore: 28.0, predictedScore: 27.8, khoi: ["C00"] },
       { name: "ĐH Khoa học Xã hội và Nhân văn - ĐHQG-HCM", region: "South", lastYearScore: 27.8, predictedScore: 27.5, khoi: ["C00", "D01"] },
@@ -113,7 +123,7 @@ const SEED_DATA = [
       "Cạnh tranh với các sinh viên ngành khác có tiếng Anh tốt.",
     ],
     subjects: ["D01", "A01", "D14", "D15"],
-    category: "Ngôn ngữ",
+    categorySlug: "ngoai-ngu",
     universities: [
       { name: "Đại học Ngoại thương (FTU)", region: "North", lastYearScore: 28.0, predictedScore: 27.8, khoi: ["D01"] },
       { name: "Đại học Hà Nội (HANU)", region: "North", lastYearScore: 35.5, predictedScore: 35.0, khoi: ["D01"] },
@@ -137,7 +147,7 @@ const SEED_DATA = [
       "Yêu cầu ngoại ngữ khắt khe nếu muốn vào các tập đoàn lớn.",
     ],
     subjects: ["A00", "A01", "C01", "D01"],
-    category: "Kỹ thuật",
+    categorySlug: "o-to-co-khi",
     universities: [
       { name: "Đại học Bách khoa Hà Nội (HUST)", region: "North", lastYearScore: 27.6, predictedScore: 27.4, khoi: ["A00", "A01"] },
       { name: "Đại học Sư phạm Kỹ thuật TP.HCM (HCMUTE)", region: "South", lastYearScore: 26.8, predictedScore: 26.5, khoi: ["A00", "A01"] },
@@ -161,7 +171,7 @@ const SEED_DATA = [
       "Nguy cơ tự động hóa một phần bởi phần mềm và AI.",
     ],
     subjects: ["A00", "A01", "D01", "D07"],
-    category: "Kinh tế",
+    categorySlug: "ke-toan",
     universities: [
       { name: "Học viện Tài chính", region: "North", lastYearScore: 26.5, predictedScore: 26.3, khoi: ["A00", "A01", "D01"] },
       { name: "Đại học Kinh tế Quốc dân (NEU)", region: "North", lastYearScore: 27.0, predictedScore: 26.8, khoi: ["A00", "A01", "D01"] },
@@ -185,7 +195,7 @@ const SEED_DATA = [
       "Đòi hỏi tính cẩn thận tuyệt đối để tránh sai sót y khoa.",
     ],
     subjects: ["B00", "A00", "D07"],
-    category: "Y - Dược",
+    categorySlug: "y-duoc",
     universities: [
       { name: "Đại học Dược Hà Nội (HUP)", region: "North", lastYearScore: 27.5, predictedScore: 27.3, khoi: ["B00"] },
       { name: "Đại học Y Dược TP.HCM - Khoa Dược", region: "South", lastYearScore: 27.0, predictedScore: 26.8, khoi: ["B00", "A00"] },
@@ -197,6 +207,7 @@ const SEED_DATA = [
 export const seed = mutation({
   args: {},
   handler: async (ctx) => {
+    let seeded = 0;
     for (const major of SEED_DATA) {
       const existing = await ctx.db
         .query("majors")
@@ -204,8 +215,9 @@ export const seed = mutation({
         .unique();
       if (!existing) {
         await ctx.db.insert("majors", major);
+        seeded++;
       }
     }
-    return { seeded: SEED_DATA.length };
+    return { seeded };
   },
 });

@@ -50,6 +50,7 @@ export function Quiz({ onCancel }: { onCancel: () => void }) {
   // Convex không hỗ trợ index trên array field nên filter subjects[] vẫn ở JS (acceptable)
   // nhưng giảm waste bằng cách fetch lazy (skip khi chưa cần)
   const allMajors = useQuery(api.majors.list, step >= 3 ? {} : "skip");
+
   const saveResult = useMutation(api.quiz.save);
 
   const handleSubmit = async () => {

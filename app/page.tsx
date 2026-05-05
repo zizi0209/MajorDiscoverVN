@@ -8,15 +8,17 @@ import { Hero } from "@/components/Hero";
 import { Quiz } from "@/components/Quiz";
 import { MajorCard } from "@/components/MajorCard";
 
+
 export default function Home() {
   const [showQuiz, setShowQuiz] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedSlug, setSelectedSlug] = useState("all");
 
-  // Rule #4: Giới hạn 50 bản ghi mặc định, tránh fetch không giới hạn
-  const queryArgs = selectedCategory !== "All" ? { category: selectedCategory } : {};
+  // Rule #4: limit 50 mặc định
+  const queryArgs = selectedSlug !== "all" ? { categorySlug: selectedSlug } : {};
   const majors = useQuery(api.majors.list, queryArgs);
 
-  const categories = useQuery(api.majors.categories, {});
+  // Rule #1: categories từ majorCategories table (36 records), không scan majors
+  const categories = useQuery(api.categories.list, {});
 
   return (
     <div className="min-h-screen bg-[#FBF9F6] font-sans">
@@ -50,9 +52,9 @@ export default function Home() {
           {/* Category Filter */}
           <div className="flex flex-wrap gap-3 mb-10 pb-6">
             <button
-              onClick={() => setSelectedCategory("All")}
+              onClick={() => setSelectedSlug("all")}
               className={`uppercase tracking-widest text-[10px] font-bold px-4 py-2 border transition-colors ${
-                selectedCategory === "All"
+                selectedSlug === "all"
                   ? "border-black bg-black text-white"
                   : "border-transparent text-neutral-500 hover:border-black hover:text-black"
               }`}
@@ -61,15 +63,15 @@ export default function Home() {
             </button>
             {(categories ?? []).map(cat => (
               <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                key={cat.slug}
+                onClick={() => setSelectedSlug(cat.slug)}
                 className={`uppercase tracking-widest text-[10px] font-bold px-4 py-2 border transition-colors ${
-                  selectedCategory === cat
+                  selectedSlug === cat.slug
                     ? "border-black bg-black text-white"
                     : "border-transparent text-neutral-500 hover:border-black hover:text-black"
                 }`}
               >
-                {cat}
+                {cat.name}
               </button>
             ))}
           </div>

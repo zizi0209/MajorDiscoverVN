@@ -2,6 +2,15 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  majorCategories: defineTable({
+    slug: v.string(),      // "cntt", "kinh-te-quan-tri"
+    name: v.string(),      // "Công nghệ thông tin - Tin học"
+    majorCount: v.number(),
+    order: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_order", ["order"]),
+
   majors: defineTable({
     slug: v.string(),
     name: v.string(),
@@ -10,7 +19,7 @@ export default defineSchema({
     pros: v.array(v.string()),
     cons: v.array(v.string()),
     subjects: v.array(v.string()),
-    category: v.string(),
+    categorySlug: v.string(), // ref majorCategories.slug
     universities: v.array(
       v.object({
         name: v.string(),
@@ -22,7 +31,7 @@ export default defineSchema({
     ),
   })
     .index("by_slug", ["slug"])
-    .index("by_category", ["category"]),
+    .index("by_category", ["categorySlug"]),
 
   quizResults: defineTable({
     khoiThi: v.string(),

@@ -1,32 +1,32 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
-// Rule #4: Thêm limit mặc định 50, tối đa 100
+// Rule #4: limit default 50, max 100
 export const list = query({
   args: {
-    category: v.optional(v.string()),
+    categorySlug: v.optional(v.string()),
     limit: v.optional(v.number()),
   },
-  handler: async (ctx, { category, limit }) => {
+  handler: async (ctx, { categorySlug, limit }) => {
     const cap = Math.min(limit ?? 50, 100);
-    if (category && category !== "All") {
+    if (categorySlug && categorySlug !== "all") {
       return ctx.db
         .query("majors")
-        .withIndex("by_category", q => q.eq("category", category))
+        .withIndex("by_category", q => q.eq("categorySlug", categorySlug))
         .take(cap);
     }
     return ctx.db.query("majors").take(cap);
   },
 });
 
-// Rule #3: by_slug index → O(log n) lookup
+// Rule #3: by_slug index → O(log n)
 export const getBySlug = query({
   args: { slug: v.string() },
   handler: async (ctx, { slug }) =>
     ctx.db.query("majors").withIndex("by_slug", q => q.eq("slug", slug)).unique(),
 });
 
-// Rule #2 & #6: Batch load song song, không N+1
+// Rule #2 & #6: Batch load song song
 export const getBySlugList = query({
   args: { slugs: v.array(v.string()) },
   handler: async (ctx, { slugs }) => {
@@ -34,19 +34,6 @@ export const getBySlugList = query({
       slugs.map(slug => ctx.db.query("majors").withIndex("by_slug", q => q.eq("slug", slug)).unique())
     );
     return results.filter(Boolean);
-  },
-});
-
-// Rule #1: Vẫn phải fetch tất cả vì Convex chưa có DISTINCT native.
-// Tối ưu: dùng index scan by_category (ordered) thay vì full collect ngẫu nhiên.
-// Khi data nhỏ (< 200 majors) đây là acceptable. Ghi chú để monitor.
-export const categories = query({
-  args: {},
-  handler: async (ctx) => {
-    // Convex không hỗ trợ SELECT DISTINCT — phải collect để dedup
-    // Monitor: nếu majors > 500, xem xét cache categories trong bảng riêng
-    const all = await ctx.db.query("majors").collect();
-    return [...new Set(all.map(m => m.category))];
   },
 });
 
@@ -59,7 +46,7 @@ export const upsert = mutation({
     pros: v.array(v.string()),
     cons: v.array(v.string()),
     subjects: v.array(v.string()),
-    category: v.string(),
+    categorySlug: v.string(),
     universities: v.array(
       v.object({
         name: v.string(),
