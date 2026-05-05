@@ -13,7 +13,7 @@ export function Hero({ onStart }: HeroProps) {
       </h2>
       <p className="text-sm md:text-base border-l-4 border-black pl-4 text-left max-w-2xl mb-8 leading-relaxed font-medium">
         Tìm kiếm khối thi phù hợp dựa trên tính cách và sở thích cá nhân. Khám phá ngành học với
-        dữ liệu chuẩn xác về điểm chuẩn và cơ hội việc làm từ Bắc vào Nam.
+        dữ liệu chuẩn xác về điểm chuẩn và cơ hội việc làm từ Bắc vào Nam cho bé Thư.
       </p>
       <div className="flex flex-wrap gap-4">
         <button
