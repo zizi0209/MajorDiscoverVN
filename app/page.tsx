@@ -12,7 +12,10 @@ export default function Home() {
   const [showQuiz, setShowQuiz] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const majors = useQuery(api.majors.list, selectedCategory !== "All" ? { category: selectedCategory } : {});
+  // Rule #4: Giới hạn 50 bản ghi mặc định, tránh fetch không giới hạn
+  const queryArgs = selectedCategory !== "All" ? { category: selectedCategory } : {};
+  const majors = useQuery(api.majors.list, queryArgs);
+
   const categories = useQuery(api.majors.categories, {});
 
   return (

@@ -30,5 +30,5 @@ export default defineSchema({
     tinhCach: v.string(),
     recommendedSlugs: v.array(v.string()),
     createdAt: v.number(),
-  }),
+  }).index("by_createdAt", ["createdAt"]),
 });

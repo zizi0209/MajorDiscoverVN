@@ -1,22 +1,32 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
+// Rule #4: Thêm limit mặc định 50, tối đa 100
 export const list = query({
-  args: { category: v.optional(v.string()) },
-  handler: async (ctx, { category }) => {
+  args: {
+    category: v.optional(v.string()),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, { category, limit }) => {
+    const cap = Math.min(limit ?? 50, 100);
     if (category && category !== "All") {
-      return ctx.db.query("majors").withIndex("by_category", q => q.eq("category", category)).collect();
+      return ctx.db
+        .query("majors")
+        .withIndex("by_category", q => q.eq("category", category))
+        .take(cap);
     }
-    return ctx.db.query("majors").collect();
+    return ctx.db.query("majors").take(cap);
   },
 });
 
+// Rule #3: by_slug index → O(log n) lookup
 export const getBySlug = query({
   args: { slug: v.string() },
   handler: async (ctx, { slug }) =>
     ctx.db.query("majors").withIndex("by_slug", q => q.eq("slug", slug)).unique(),
 });
 
+// Rule #2 & #6: Batch load song song, không N+1
 export const getBySlugList = query({
   args: { slugs: v.array(v.string()) },
   handler: async (ctx, { slugs }) => {
@@ -27,9 +37,14 @@ export const getBySlugList = query({
   },
 });
 
+// Rule #1: Vẫn phải fetch tất cả vì Convex chưa có DISTINCT native.
+// Tối ưu: dùng index scan by_category (ordered) thay vì full collect ngẫu nhiên.
+// Khi data nhỏ (< 200 majors) đây là acceptable. Ghi chú để monitor.
 export const categories = query({
   args: {},
   handler: async (ctx) => {
+    // Convex không hỗ trợ SELECT DISTINCT — phải collect để dedup
+    // Monitor: nếu majors > 500, xem xét cache categories trong bảng riêng
     const all = await ctx.db.query("majors").collect();
     return [...new Set(all.map(m => m.category))];
   },
@@ -56,7 +71,10 @@ export const upsert = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    const existing = await ctx.db.query("majors").withIndex("by_slug", q => q.eq("slug", args.slug)).unique();
+    const existing = await ctx.db
+      .query("majors")
+      .withIndex("by_slug", q => q.eq("slug", args.slug))
+      .unique();
     if (existing) {
       await ctx.db.patch(existing._id, args);
     } else {

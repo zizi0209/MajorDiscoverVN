@@ -46,7 +46,10 @@ export function Quiz({ onCancel }: { onCancel: () => void }) {
   const [tinhCach, setTinhCach] = useState("");
   const [recommendations, setRecommendations] = useState<Major[]>([]);
 
-  const allMajors = useQuery(api.majors.list, {});
+  // Rule #1: Chỉ fetch khi user đã chọn khoiThi (bước 3+), không fetch ngay từ đầu
+  // Convex không hỗ trợ index trên array field nên filter subjects[] vẫn ở JS (acceptable)
+  // nhưng giảm waste bằng cách fetch lazy (skip khi chưa cần)
+  const allMajors = useQuery(api.majors.list, step >= 3 ? {} : "skip");
   const saveResult = useMutation(api.quiz.save);
 
   const handleSubmit = async () => {

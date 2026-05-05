@@ -13,8 +13,9 @@ export const save = mutation({
   },
 });
 
+// Rule #3: withIndex("by_createdAt") → dùng index cho sort, tránh full scan
 export const recent = query({
   args: {},
   handler: async (ctx) =>
-    ctx.db.query("quizResults").order("desc").take(20),
+    ctx.db.query("quizResults").withIndex("by_createdAt").order("desc").take(20),
 });
