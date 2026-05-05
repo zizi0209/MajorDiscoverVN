@@ -42,12 +42,12 @@ export const upsert = mutation({
     slug: v.string(),
     name: v.string(),
     code: v.string(),
-    description: v.string(),
-    pros: v.array(v.string()),
-    cons: v.array(v.string()),
-    subjects: v.array(v.string()),
     categorySlug: v.string(),
-    universities: v.array(
+    description: v.optional(v.string()),
+    pros: v.optional(v.array(v.string())),
+    cons: v.optional(v.array(v.string())),
+    subjects: v.optional(v.array(v.string())),
+    universities: v.optional(v.array(
       v.object({
         name: v.string(),
         region: v.string(),
@@ -55,7 +55,7 @@ export const upsert = mutation({
         predictedScore: v.number(),
         khoi: v.array(v.string()),
       })
-    ),
+    )),
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db

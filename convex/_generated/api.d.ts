@@ -12,6 +12,10 @@ import type * as categories from "../categories.js";
 import type * as majors from "../majors.js";
 import type * as quiz from "../quiz.js";
 import type * as seed from "../seed.js";
+import type * as seedMajors from "../seedMajors.js";
+import type * as seedMajorsData1 from "../seedMajorsData1.js";
+import type * as seedMajorsData2 from "../seedMajorsData2.js";
+import type * as seedMajorsData3 from "../seedMajorsData3.js";
 
 import type {
   ApiFromModules,
@@ -24,6 +28,10 @@ declare const fullApi: ApiFromModules<{
   majors: typeof majors;
   quiz: typeof quiz;
   seed: typeof seed;
+  seedMajors: typeof seedMajors;
+  seedMajorsData1: typeof seedMajorsData1;
+  seedMajorsData2: typeof seedMajorsData2;
+  seedMajorsData3: typeof seedMajorsData3;
 }>;
 
 /**

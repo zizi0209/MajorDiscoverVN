@@ -65,7 +65,7 @@ export function Quiz({ onCancel }: { onCancel: () => void }) {
     try {
       // Phân tích đơn giản dựa trên khối thi và từ khóa sở thích
       const majors = allMajors ?? [];
-      const khoiMatched = majors.filter(m => m.subjects.includes(khoiThi));
+      const khoiMatched = majors.filter(m => m.subjects?.includes(khoiThi));
 
       const keywords: Record<string, string[]> = {
         "cong-nghe-thong-tin": ["công nghệ", "lập trình", "máy tính", "phần mềm", "it", "code"],
