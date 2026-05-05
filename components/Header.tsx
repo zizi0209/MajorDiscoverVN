@@ -17,6 +17,7 @@ export function Header() {
         <Link href="/" className="border-b border-black whitespace-nowrap">Trang chủ</Link>
         <Link href="/#majors-list" className="opacity-40 hover:opacity-100 whitespace-nowrap transition-opacity">Ngành học</Link>
         <Link href="/#quiz-section" className="opacity-40 hover:opacity-100 whitespace-nowrap transition-opacity">Đánh giá năng lực</Link>
+        <Link href="/deep-quiz" className="opacity-40 hover:opacity-100 whitespace-nowrap transition-opacity">Khảo sát chuyên sâu</Link>
       </nav>
     </header>
   );
