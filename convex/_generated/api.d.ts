@@ -9,7 +9,11 @@
  */
 
 import type * as categories from "../categories.js";
+import type * as categoryTemplates from "../categoryTemplates.js";
+import type * as majorDescriptions1 from "../majorDescriptions1.js";
+import type * as majorDescriptions2 from "../majorDescriptions2.js";
 import type * as majors from "../majors.js";
+import type * as patchMajorDetails from "../patchMajorDetails.js";
 import type * as quiz from "../quiz.js";
 import type * as seed from "../seed.js";
 import type * as seedMajors from "../seedMajors.js";
@@ -25,7 +29,11 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   categories: typeof categories;
+  categoryTemplates: typeof categoryTemplates;
+  majorDescriptions1: typeof majorDescriptions1;
+  majorDescriptions2: typeof majorDescriptions2;
   majors: typeof majors;
+  patchMajorDetails: typeof patchMajorDetails;
   quiz: typeof quiz;
   seed: typeof seed;
   seedMajors: typeof seedMajors;
