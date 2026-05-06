@@ -39,6 +39,22 @@ export const getBySlugList = query({
   },
 });
 
+// Rule #5: Chỉ trả fields cần thiết cho Quiz matching, loại bỏ universities/pros/cons/description
+// ~270 × 100B = ~27KB thay vì ~540KB → tiết kiệm ~95% bandwidth
+export const listSlim = query({
+  args: { categorySlug: v.optional(v.string()), limit: v.optional(v.number()) },
+  handler: async (ctx, { categorySlug, limit }) => {
+    const cap = Math.min(limit ?? 270, 300);
+    const q = (categorySlug && categorySlug !== "all")
+      ? ctx.db.query("majors").withIndex("by_category", q => q.eq("categorySlug", categorySlug)).take(cap)
+      : ctx.db.query("majors").take(cap);
+    return (await q).map(m => ({
+      _id: m._id, slug: m.slug, name: m.name, code: m.code,
+      categorySlug: m.categorySlug, subjects: m.subjects,
+    }));
+  },
+});
+
 export const upsert = mutation({
   args: {
     slug: v.string(),

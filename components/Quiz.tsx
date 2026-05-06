@@ -34,23 +34,34 @@ export function Quiz({ onCancel }: { onCancel: () => void }) {
     [phase, answers, khoiThi]
   );
 
-  // Prefetch ngay khi bắt đầu questions (không đợi loading)
-  const allMajors = useQuery(api.majors.list, phase !== "khoi" ? {} : "skip");
+  // Prefetch slim data cho matching (chỉ slug, categorySlug, subjects — ~27KB thay vì ~540KB)
+  const slimMajors = useQuery(api.majors.listSlim, phase !== "khoi" ? {} : "skip");
   const saveResult = useMutation(api.quiz.save);
 
-  // Khi phase=loading VÀ allMajors đã sẵn sàng → tính kết quả ngay
-  useEffect(() => {
-    if (phase !== "loading" || !allMajors) return;
+  // Tính recommended slugs từ slim data
+  const recommendedSlugs = useMemo(() => {
+    if (phase !== "loading" || !slimMajors) return null;
     const cats = getTopCategories(answers, khoiThi);
-    const matched = allMajors.filter(m => cats.includes(m.categorySlug));
+    const matched = slimMajors.filter(m => cats.includes(m.categorySlug));
     const withKhoi = matched.filter(m => m.subjects?.includes(khoiThi));
     const top = withKhoi.length >= 3 ? withKhoi.slice(0, 5) : matched.slice(0, 5);
-    const result = top.length > 0 ? top : allMajors.slice(0, 3);
+    const result = top.length > 0 ? top : slimMajors.slice(0, 3);
+    return result.map(m => m.slug);
+  }, [phase, slimMajors, answers, khoiThi]);
 
-    setRecommendations(result);
+  // Fetch full data chỉ cho top results (~10KB thay vì ~540KB)
+  const fullResults = useQuery(
+    api.majors.getBySlugList,
+    recommendedSlugs ? { slugs: recommendedSlugs } : "skip"
+  );
+
+  // Khi fullResults sẵn sàng → hiện kết quả
+  useEffect(() => {
+    if (phase !== "loading" || !fullResults || fullResults.length === 0) return;
+    setRecommendations(fullResults.filter((m): m is Major => m !== null));
     setPhase("result");
-    savedRef.current = false; // cho phép save
-  }, [phase, allMajors, answers, khoiThi]);
+    savedRef.current = false;
+  }, [phase, fullResults]);
 
   // Save kết quả khi hiện result (tách riêng để không block UI)
   useEffect(() => {
