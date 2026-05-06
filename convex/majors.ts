@@ -2,6 +2,7 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 // Rule #4: limit default 50, max 100
+// Rule #7: ~270 majors × ~2KB/row → max 100KB/request. No pagination needed at this scale.
 export const list = query({
   args: {
     categorySlug: v.optional(v.string()),
@@ -26,7 +27,8 @@ export const getBySlug = query({
     ctx.db.query("majors").withIndex("by_slug", q => q.eq("slug", slug)).unique(),
 });
 
-// Rule #2 & #6: Batch load song song
+// Rule #2 & #6: Batch load song song, dùng Map-style lookup qua index
+// Rule #7: slugs.length thường ≤5 từ quiz result → 5 index lookups, negligible
 export const getBySlugList = query({
   args: { slugs: v.array(v.string()) },
   handler: async (ctx, { slugs }) => {

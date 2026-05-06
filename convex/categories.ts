@@ -2,10 +2,11 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 // Rule #3: by_order index → list theo thứ tự display
+// Rule #4: take(50) safety cap — hiện tại 35 categories, ~0.5KB/row → ~17KB/request
 export const list = query({
   args: {},
   handler: async (ctx) =>
-    ctx.db.query("majorCategories").withIndex("by_order").order("asc").collect(),
+    ctx.db.query("majorCategories").withIndex("by_order").order("asc").take(50),
 });
 
 export const getBySlug = query({

@@ -14,6 +14,7 @@ export const save = mutation({
 });
 
 // Rule #3: withIndex("by_createdAt") → dùng index cho sort, tránh full scan
+// Rule #7: quizResults tăng dần theo user, take(20) giữ response nhỏ. Ước lượng ~1KB/row → ~20KB/request
 export const recent = query({
   args: {},
   handler: async (ctx) =>
