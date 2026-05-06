@@ -1,8 +1,6 @@
-interface HeroProps {
-  onStart: () => void;
-}
+import Link from "next/link";
 
-export function Hero({ onStart }: HeroProps) {
+export function Hero() {
   return (
     <section className="py-12 md:py-24 px-0 flex flex-col items-start justify-center max-w-4xl">
       <div className="inline-flex items-center border border-black bg-[#EAE6DF] px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-6">
@@ -16,19 +14,18 @@ export function Hero({ onStart }: HeroProps) {
         dữ liệu chuẩn xác về điểm chuẩn và cơ hội việc làm từ Bắc vào Nam cho bé Thư.
       </p>
       <div className="flex flex-wrap gap-4">
-        <button
-          id="btn-start-quiz"
-          onClick={onStart}
+        <Link
+          href="/danh-gia"
           className="bg-black text-white text-[10px] font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors px-8 py-4"
         >
           Bắt đầu khảo sát
-        </button>
-        <button
-          onClick={() => document.getElementById("majors-list")?.scrollIntoView({ behavior: "smooth" })}
+        </Link>
+        <Link
+          href="/nganh-hoc"
           className="border border-black text-black text-[10px] font-bold uppercase tracking-widest hover:bg-neutral-100 transition-colors px-8 py-4"
         >
           Xem tất cả ngành học
-        </button>
+        </Link>
       </div>
     </section>
   );

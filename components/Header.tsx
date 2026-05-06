@@ -1,6 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const NAV_ITEMS = [
+  { href: "/", label: "Trang chủ" },
+  { href: "/nganh-hoc", label: "Ngành học" },
+  { href: "/danh-gia", label: "Đánh giá năng lực" },
+  { href: "/deep-quiz", label: "Khảo sát chuyên sâu" },
+];
 
 export function Header() {
+  const pathname = usePathname();
+
   return (
     <header className="flex flex-col md:flex-row md:justify-between items-start md:items-end border-b-2 border-black pb-4 mb-6 pt-8 w-full max-w-6xl mx-auto px-4">
       <div>
@@ -14,10 +26,17 @@ export function Header() {
         </Link>
       </div>
       <nav className="mt-6 md:mt-0 flex gap-6 md:gap-8 text-[11px] uppercase tracking-widest font-semibold pb-1 w-full md:w-auto overflow-x-auto">
-        <Link href="/" className="border-b border-black whitespace-nowrap">Trang chủ</Link>
-        <Link href="/#majors-list" className="opacity-40 hover:opacity-100 whitespace-nowrap transition-opacity">Ngành học</Link>
-        <Link href="/#quiz-section" className="opacity-40 hover:opacity-100 whitespace-nowrap transition-opacity">Đánh giá năng lực</Link>
-        <Link href="/deep-quiz" className="opacity-40 hover:opacity-100 whitespace-nowrap transition-opacity">Khảo sát chuyên sâu</Link>
+        {NAV_ITEMS.map(({ href, label }) => (
+          <Link
+            key={href}
+            href={href}
+            className={`whitespace-nowrap transition-opacity ${
+              pathname === href ? "border-b border-black opacity-100" : "opacity-40 hover:opacity-100"
+            }`}
+          >
+            {label}
+          </Link>
+        ))}
       </nav>
     </header>
   );
